@@ -1,0 +1,36 @@
+import { useEffect } from 'react'
+import { startGameLoop } from './core/loop'
+import { startAutoSave } from './save/index'
+import { useOfflineReport } from './systems/offline'
+import App from './App'
+
+export default function Root() {
+  const offlineReport = useOfflineReport()
+
+  useEffect(() => {
+    const stopLoop = startGameLoop()
+    const stopSave = startAutoSave()
+    return () => {
+      stopLoop()
+      stopSave()
+    }
+  }, [])
+
+  return (
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 16 }}>
+      {offlineReport && (
+        <div style={{ background: '#fffbe6', border: '1px solid #ffe58f', padding: 12, marginBottom: 12 }}>
+          <strong>离线收益报告</strong>
+          <div>离线时长: {Math.floor(offlineReport.seconds)} 秒</div>
+          <div>
+            获得资源:{' '}
+            {Object.entries(offlineReport.resources)
+              .map(([k, v]) => `${k}: ${v.toFixed(2)}`)
+              .join(', ')}
+          </div>
+        </div>
+      )}
+      <App />
+    </div>
+  )
+}
