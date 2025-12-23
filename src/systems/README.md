@@ -6,7 +6,7 @@
 
 | 文件 | 状态 | 说明 |
 |------|------|------|
-| `artifacts.ts` | ✅ 稳定 | 神器系统（背包/装备/预设） |
+| `artifacts.ts` | ✅ 稳定 | 神器系统（背包/装备/预设，含M4扩展10件） |
 | `automation.ts` | ✅ 稳定 | 自动化规则引擎 |
 | `automation.test.ts` | ✅ 稳定 | 自动化测试 |
 | `buildings.ts` | ✅ 稳定 | 建筑系统 store |

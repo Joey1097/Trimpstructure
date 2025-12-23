@@ -1,6 +1,6 @@
 /**
  * @Input: Zustand, Decimal.js
- * @Output: useArtifactStore - 神器状态 (背包/装备/预设/乘数计算)
+ * @Output: useArtifactStore - 神器状态 (背包/装备/预设/乘数计算), 含M4扩展神器池
  * @Pos: 神器系统，提供装备管理和属性加成
  * @Notice: If this file changes, update this block AND the folder's README.
  */
@@ -38,6 +38,7 @@ export interface ArtifactStore {
 }
 
 const SAMPLE_ARTIFACTS: Artifact[] = [
+  // === 基础神器 ===
   {
     id: 'a1',
     name: '爆发指环',
@@ -52,6 +53,72 @@ const SAMPLE_ARTIFACTS: Artifact[] = [
     slot: 1,
     tags: ['sustain'],
     baseStats: { defense: new Decimal(1.25) },
+    level: 1,
+  },
+
+  // === M4 新增神器 ===
+  {
+    id: 'a3',
+    name: '时光沙漏',
+    slot: 2,
+    tags: ['control'],
+    baseStats: { timeBonus: new Decimal(1.2) },
+    level: 1,
+  },
+  {
+    id: 'a4',
+    name: '黄金塔罗',
+    slot: 3,
+    tags: ['economy'],
+    baseStats: { resource: new Decimal(1.35) },
+    level: 1,
+  },
+  {
+    id: 'a5',
+    name: '破盾之锤',
+    slot: 4,
+    tags: ['burst'],
+    baseStats: { attack: new Decimal(1.2), shieldDamage: new Decimal(1.4) },
+    level: 1,
+  },
+  {
+    id: 'a6',
+    name: '生命宝珠',
+    slot: 0,
+    tags: ['sustain'],
+    baseStats: { health: new Decimal(1.5) },
+    level: 1,
+  },
+  {
+    id: 'a7',
+    name: '疾速靴',
+    slot: 1,
+    tags: ['control'],
+    baseStats: { gatherSpeed: new Decimal(1.25) },
+    level: 1,
+  },
+  {
+    id: 'a8',
+    name: '研究法典',
+    slot: 2,
+    tags: ['economy'],
+    baseStats: { researchSpeed: new Decimal(1.3) },
+    level: 1,
+  },
+  {
+    id: 'a9',
+    name: '冰霜之心',
+    slot: 3,
+    tags: ['burst', 'sustain'],
+    baseStats: { attack: new Decimal(1.15), defense: new Decimal(1.15) },
+    level: 1,
+  },
+  {
+    id: 'a10',
+    name: '虚空徽章',
+    slot: 4,
+    tags: ['burst', 'control'],
+    baseStats: { attack: new Decimal(1.4), timeBonus: new Decimal(1.1) },
     level: 1,
   },
 ]
