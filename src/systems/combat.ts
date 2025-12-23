@@ -41,12 +41,26 @@ export interface CombatState {
   artifactMultiplier: Decimal
 }
 
+export interface CombatSimulation {
+  nodeId: string
+  nodeName: string
+  nodeHp: number
+  currentDamage: number
+  ttk: number  // Time to Kill in seconds
+  startedAt: number
+  isActive: boolean
+}
+
 export interface CombatStore {
   map: MapState
   combat: CombatState
+  simulation: CombatSimulation | null
   startMap: (mapId: string) => void
   clearNode: (nodeId: string) => void
   updateReachable: () => void
+  simulateCombat: (nodeId: string) => CombatSimulation | null
+  startBattle: (nodeId: string) => void
+  tickBattle: () => void
 }
 
 export const TEST_MAP: Record<string, MapNode> = {
@@ -65,13 +79,16 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     worldMultiplier: new Decimal(1),
     artifactMultiplier: new Decimal(1),
   },
+  simulation: null,
+
   startMap: (mapId) => {
-    set({ map: { currentMapId: mapId, cleared: [], reachable: ['n1'] } })
+    set({ map: { currentMapId: mapId, cleared: [], reachable: ['n1'] }, simulation: null })
   },
+
   clearNode: (nodeId) => {
     const cleared = [...get().map.cleared]
     if (!cleared.includes(nodeId)) cleared.push(nodeId)
-    set({ map: { ...get().map, cleared } })
+    set({ map: { ...get().map, cleared }, simulation: null })
     get().updateReachable()
 
     // drop rewards
@@ -83,6 +100,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       })
     }
   },
+
   updateReachable: () => {
     const cleared = get().map.cleared
     const reachable: string[] = []
@@ -92,5 +110,69 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       if (fromCleared || n.id === 'n1') reachable.push(n.id)
     })
     set({ map: { ...get().map, reachable } })
+  },
+
+  // 模拟战斗，返回预估 TTK
+  simulateCombat: (nodeId) => {
+    const node = TEST_MAP[nodeId]
+    if (!node) return null
+
+    const { combat } = get()
+    // 计算 DPS = 基础攻击 × 根号(装备评分) × 世界乘数 × 神器乘数
+    const dps = combat.baseAttack
+      .mul(combat.gearScore.sqrt())
+      .mul(combat.worldMultiplier)
+      .mul(combat.artifactMultiplier)
+
+    // TTK = 节点HP / DPS
+    const ttk = Math.ceil(node.hp / dps.toNumber())
+
+    return {
+      nodeId,
+      nodeName: node.name,
+      nodeHp: node.hp,
+      currentDamage: 0,
+      ttk,
+      startedAt: 0,
+      isActive: false,
+    }
+  },
+
+  // 开始战斗
+  startBattle: (nodeId) => {
+    const sim = get().simulateCombat(nodeId)
+    if (!sim) return
+
+    set({
+      simulation: {
+        ...sim,
+        startedAt: Date.now(),
+        isActive: true,
+      }
+    })
+  },
+
+  // 每 tick 更新战斗进度
+  tickBattle: () => {
+    const { simulation, combat } = get()
+    if (!simulation || !simulation.isActive) return
+
+    const elapsed = (Date.now() - simulation.startedAt) / 1000
+    const dps = combat.baseAttack
+      .mul(combat.gearScore.sqrt())
+      .mul(combat.worldMultiplier)
+      .mul(combat.artifactMultiplier)
+
+    const damage = dps.mul(elapsed).toNumber()
+
+    if (damage >= simulation.nodeHp) {
+      // 战斗胜利，清理节点
+      get().clearNode(simulation.nodeId)
+    } else {
+      // 更新伤害进度
+      set({
+        simulation: { ...simulation, currentDamage: damage }
+      })
+    }
   },
 }))

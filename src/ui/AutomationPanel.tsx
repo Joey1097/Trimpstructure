@@ -1,12 +1,12 @@
 /**
- * @Input: useAutomationStore, useArtifactStore, React hooks
+ * @Input: useAutomationStore, React hooks
  * @Output: AutomationPanel 组件 - 自动化规则管理面板
  * @Pos: UI 面板，显示规则列表和编辑器
  * @Notice: If this file changes, update this block AND the folder's README.
  */
 
 import { useAutomationStore, type AutomationRule } from '../systems/automation'
-import { useArtifactStore } from '../systems/artifacts'
+// useArtifactStore 预留用于预设提示功能
 import { useState } from 'react'
 
 const PRESET_RULES: Omit<AutomationRule, 'id'>[] = [

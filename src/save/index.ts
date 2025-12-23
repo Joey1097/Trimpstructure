@@ -8,7 +8,7 @@
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
 import Decimal from 'decimal.js'
-import type { GameState } from '../state/store'
+import type { GameState, ResourceKey } from '../state/store'
 import { useGameStore } from '../state/store'
 
 export interface SaveMeta {

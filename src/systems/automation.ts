@@ -86,7 +86,7 @@ function evaluateCondition(
   condition: AutomationRule['conditions'][0],
   game: ReturnType<typeof useGameStore.getState>,
   combat: ReturnType<typeof useCombatStore.getState>,
-  world: ReturnType<typeof useWorldStore.getState>
+  _world: ReturnType<typeof useWorldStore.getState>
 ): boolean {
   let value: number
 
@@ -135,11 +135,11 @@ function executeAction(
   switch (action.type) {
     case 'switchPreset':
       // 切换神器预设
-      artifacts.switchPreset(action.payload)
+      artifacts.switchPreset(action.payload as number)
       break
     case 'setPopulation': {
       // 设置人口分配
-      const { role, value } = action.payload as { role: string; value: number }
+      const { role, value } = action.payload as { role: keyof typeof game.population.assignment; value: number }
       if (role && typeof value === 'number') {
         game.assignPopulation(role, value)
       }
