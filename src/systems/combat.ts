@@ -1,5 +1,5 @@
 /**
- * @Input: Zustand, Decimal.js, useWorldStore
+ * @Input: Zustand, Decimal.js, useWorldStore, MAPS
  * @Output: useCombatStore - 战斗/地图状态 (节点/路径/战斗属性/掉落)
  * @Pos: 战斗与地图系统，管理节点推进和战斗力计算
  * @Notice: If this file changes, update this block AND the folder's README.
@@ -8,6 +8,7 @@
 import { create } from 'zustand'
 import Decimal from 'decimal.js'
 import { useWorldStore } from './world'
+import { MAPS, type GameMap } from '../data/maps'
 
 export interface DropChance {
   id: string
@@ -30,6 +31,7 @@ export interface MapState {
   currentMapId: string
   cleared: string[]
   reachable: string[]
+  totalCleared: number  // 跨地图总通关数
 }
 
 export interface CombatState {
@@ -39,38 +41,39 @@ export interface CombatState {
   gearScore: Decimal
   worldMultiplier: Decimal
   artifactMultiplier: Decimal
+  shieldBreaker: boolean  // 是否解锁破盾
 }
 
 export interface CombatSimulation {
   nodeId: string
   nodeName: string
   nodeHp: number
+  nodeType: MapNode['type']
   currentDamage: number
   ttk: number  // Time to Kill in seconds
   startedAt: number
   isActive: boolean
+  timeLimit?: number  // 限时节点的时间限制
 }
 
 export interface CombatStore {
   map: MapState
   combat: CombatState
   simulation: CombatSimulation | null
+  getCurrentMap: () => GameMap | null
+  getNode: (nodeId: string) => MapNode | null
+  switchMap: (mapId: string) => void
   startMap: (mapId: string) => void
   clearNode: (nodeId: string) => void
   updateReachable: () => void
   simulateCombat: (nodeId: string) => CombatSimulation | null
   startBattle: (nodeId: string) => void
   tickBattle: () => void
-}
-
-export const TEST_MAP: Record<string, MapNode> = {
-  n1: { id: 'n1', name: '入口哨站', type: 'normal', hp: 100, adjacent: ['n2'], drops: [{ id: 'blueprint', weight: 1, minNode: 1 }] },
-  n2: { id: 'n2', name: '护盾前哨', type: 'shield', hp: 150, shieldType: 'physical', adjacent: ['n3'], drops: [{ id: 'memory', weight: 1, minNode: 2 }] },
-  n3: { id: 'n3', name: '核心仓库', type: 'normal', hp: 200, adjacent: [], drops: [{ id: 'blueprint', weight: 1, minNode: 3 }] },
+  canDamageNode: (node: MapNode) => boolean
 }
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
-  map: { currentMapId: 'test', cleared: [], reachable: ['n1'] },
+  map: { currentMapId: 'tutorial', cleared: [], reachable: ['t1'], totalCleared: 0 },
   combat: {
     baseAttack: new Decimal(10),
     baseHealth: new Decimal(100),
@@ -78,51 +81,95 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     gearScore: new Decimal(1),
     worldMultiplier: new Decimal(1),
     artifactMultiplier: new Decimal(1),
+    shieldBreaker: false,
   },
   simulation: null,
 
+  getCurrentMap: () => {
+    return MAPS[get().map.currentMapId] || null
+  },
+
+  getNode: (nodeId) => {
+    const map = get().getCurrentMap()
+    return map?.nodes[nodeId] || null
+  },
+
+  switchMap: (mapId) => {
+    const map = MAPS[mapId]
+    if (!map) return
+    set({
+      map: { ...get().map, currentMapId: mapId, cleared: [], reachable: [map.entryNode] },
+      simulation: null,
+    })
+  },
+
   startMap: (mapId) => {
-    set({ map: { currentMapId: mapId, cleared: [], reachable: ['n1'] }, simulation: null })
+    const map = MAPS[mapId]
+    if (!map) return
+    set({
+      map: { currentMapId: mapId, cleared: [], reachable: [map.entryNode], totalCleared: get().map.totalCleared },
+      simulation: null
+    })
   },
 
   clearNode: (nodeId) => {
     const cleared = [...get().map.cleared]
     if (!cleared.includes(nodeId)) cleared.push(nodeId)
-    set({ map: { ...get().map, cleared }, simulation: null })
+    const totalCleared = get().map.totalCleared + 1
+    set({ map: { ...get().map, cleared, totalCleared }, simulation: null })
     get().updateReachable()
 
     // drop rewards
-    const node = TEST_MAP[nodeId]
+    const node = get().getNode(nodeId)
     if (node) {
-      node.drops.forEach((d) => {
-        if (d.id === 'blueprint') useWorldStore.getState().addCurrency('blueprint', new Decimal(1))
-        if (d.id === 'memory') useWorldStore.getState().addCurrency('memory', new Decimal(1))
+      node.drops.forEach((d: DropChance) => {
+        if (d.id === 'blueprint') useWorldStore.getState().addCurrency('blueprint', new Decimal(d.weight))
+        if (d.id === 'memory') useWorldStore.getState().addCurrency('memory', new Decimal(d.weight))
       })
     }
   },
 
   updateReachable: () => {
+    const map = get().getCurrentMap()
+    if (!map) return
+
     const cleared = get().map.cleared
     const reachable: string[] = []
-    Object.values(TEST_MAP).forEach((n) => {
-      const fromCleared = n.adjacent.some((a) => cleared.includes(a))
+    Object.values(map.nodes).forEach((n: MapNode) => {
+      const fromCleared = n.adjacent.some((a: string) => cleared.includes(a))
       if (cleared.includes(n.id)) return
-      if (fromCleared || n.id === 'n1') reachable.push(n.id)
+      if (fromCleared || n.id === map.entryNode) reachable.push(n.id)
     })
     set({ map: { ...get().map, reachable } })
   },
 
+  canDamageNode: (node) => {
+    if (node.type === 'normal' || node.type === 'timed') return true
+    if (node.type === 'shield') return get().combat.shieldBreaker
+    if (node.type === 'protected') {
+      // 保护节点需要相邻节点都被清除
+      const cleared = get().map.cleared
+      return node.adjacent.every(a => cleared.includes(a))
+    }
+    return true
+  },
+
   // 模拟战斗，返回预估 TTK
   simulateCombat: (nodeId) => {
-    const node = TEST_MAP[nodeId]
+    const node = get().getNode(nodeId)
     if (!node) return null
 
     const { combat } = get()
     // 计算 DPS = 基础攻击 × 根号(装备评分) × 世界乘数 × 神器乘数
-    const dps = combat.baseAttack
+    let dps = combat.baseAttack
       .mul(combat.gearScore.sqrt())
       .mul(combat.worldMultiplier)
       .mul(combat.artifactMultiplier)
+
+    // 护盾节点如果没有破盾能力，伤害减半
+    if (node.type === 'shield' && !combat.shieldBreaker) {
+      dps = dps.mul(0.5)
+    }
 
     // TTK = 节点HP / DPS
     const ttk = Math.ceil(node.hp / dps.toNumber())
@@ -131,10 +178,12 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       nodeId,
       nodeName: node.name,
       nodeHp: node.hp,
+      nodeType: node.type,
       currentDamage: 0,
       ttk,
       startedAt: 0,
       isActive: false,
+      timeLimit: node.timeLimit,
     }
   },
 
@@ -158,10 +207,24 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     if (!simulation || !simulation.isActive) return
 
     const elapsed = (Date.now() - simulation.startedAt) / 1000
-    const dps = combat.baseAttack
+
+    // 限时节点超时检查
+    if (simulation.timeLimit && elapsed >= simulation.timeLimit) {
+      // 超时失败，重置战斗
+      set({ simulation: null })
+      return
+    }
+
+    let dps = combat.baseAttack
       .mul(combat.gearScore.sqrt())
       .mul(combat.worldMultiplier)
       .mul(combat.artifactMultiplier)
+
+    // 护盾减伤
+    const node = get().getNode(simulation.nodeId)
+    if (node?.type === 'shield' && !combat.shieldBreaker) {
+      dps = dps.mul(0.5)
+    }
 
     const damage = dps.mul(elapsed).toNumber()
 
