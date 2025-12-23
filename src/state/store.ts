@@ -42,6 +42,8 @@ export interface GameState {
   addResource: (key: ResourceKey, delta: Decimal) => void
   setResourceCap: (key: ResourceKey, cap: Decimal) => void
   setResourceMultiplier: (key: ResourceKey, mul: Decimal) => void
+  setWorldMultiplier: (mul: Decimal) => void
+  setArtifactMultiplier: (mul: Decimal) => void
 }
 
 const initialAmount = new Decimal(0)
@@ -107,4 +109,6 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({ resources: { ...state.resources, caps: { ...state.resources.caps, [key]: cap } } })),
   setResourceMultiplier: (key, mul) =>
     set((state) => ({ resources: { ...state.resources, multipliers: { ...state.resources.multipliers, [key]: mul } } })),
+  setWorldMultiplier: (mul) => set({ worldMultiplier: mul }),
+  setArtifactMultiplier: (mul) => set({ artifactMultiplier: mul }),
 }))

@@ -9,6 +9,9 @@ import { useEffect } from 'react'
 import { startGameLoop } from './core/loop'
 import { startAutoSave } from './save/index'
 import { useOfflineReport } from './systems/offline'
+import { syncGlobalMultipliers } from './systems/worldEffects'
+import { useWorldStore } from './systems/world'
+import { useArtifactStore } from './systems/artifacts'
 import App from './App'
 
 export default function Root() {
@@ -20,6 +23,21 @@ export default function Root() {
     return () => {
       stopLoop()
       stopSave()
+    }
+  }, [])
+
+  // 监听并同步全局乘数
+  useEffect(() => {
+    // 初始同步
+    syncGlobalMultipliers()
+
+    // 订阅变更
+    const unsubWorld = useWorldStore.subscribe(() => syncGlobalMultipliers())
+    const unsubArtifact = useArtifactStore.subscribe(() => syncGlobalMultipliers())
+
+    return () => {
+      unsubWorld()
+      unsubArtifact()
     }
   }, [])
 

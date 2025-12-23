@@ -71,6 +71,8 @@ export interface CombatStore {
   startBattle: (nodeId: string) => void
   tickBattle: () => void
   canDamageNode: (node: MapNode) => boolean
+  setWorldMultiplier: (mul: Decimal) => void
+  setArtifactMultiplier: (mul: Decimal) => void
 }
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
@@ -243,4 +245,6 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       })
     }
   },
+  setWorldMultiplier: (mul) => set((state) => ({ combat: { ...state.combat, worldMultiplier: mul } })),
+  setArtifactMultiplier: (mul) => set((state) => ({ combat: { ...state.combat, artifactMultiplier: mul } })),
 }))

@@ -6,19 +6,37 @@
  */
 
 import { useGameStore } from '../state/store'
-import { useWorldStore } from '../systems/world'
+import { useWorldStore } from './world'
+import { useArtifactStore } from './artifacts'
+import { useCombatStore } from './combat'
 
-export function applyWorldMultipliers() {
-  const worldMul = useWorldStore.getState().getMultiplier('resource')
-  // const attackMul = useWorldStore.getState().getMultiplier('attack')
-  const game = useGameStore.getState()
+export function syncGlobalMultipliers() {
+  const worldStore = useWorldStore.getState()
+  const artifactStore = useArtifactStore.getState()
+  const gameStore = useGameStore.getState()
+  const combatStore = useCombatStore.getState()
 
-  // 更新全局乘数
-  game.setResourceMultiplier('wood', worldMul)
-  game.setResourceMultiplier('stone', worldMul)
-  game.setResourceMultiplier('iron', worldMul)
-  game.setResourceMultiplier('food', worldMul)
-  game.setResourceMultiplier('crystal', worldMul)
+  // 1. 获取基础乘数
+  const worldResMul = worldStore.getMultiplier('resource')
+  const worldAtkMul = worldStore.getMultiplier('attack')
 
-  // TODO: 战斗模块完成后同步 attackMul
+  const artifactResMul = artifactStore.getArtifactMultiplier('resource')
+  const artifactAtkMul = artifactStore.getArtifactMultiplier('attack')
+
+  // 2. 更新资源系统 multiplier
+  // GameStore 中 world/artifact 乘数分开存储，在生产公式中相乘
+  gameStore.setWorldMultiplier(worldResMul)
+  gameStore.setArtifactMultiplier(artifactResMul)
+
+  // 更新各单项资源乘数 (目前先用 worldResMul 覆盖所有，实际可细分)
+  const totalGlobalResMul = worldResMul.mul(artifactResMul)
+  gameStore.setResourceMultiplier('wood', totalGlobalResMul)
+  gameStore.setResourceMultiplier('stone', totalGlobalResMul)
+  gameStore.setResourceMultiplier('iron', totalGlobalResMul)
+  gameStore.setResourceMultiplier('food', totalGlobalResMul)
+  gameStore.setResourceMultiplier('crystal', totalGlobalResMul)
+
+  // 3. 更新战斗系统 multiplier
+  combatStore.setWorldMultiplier(worldAtkMul)
+  combatStore.setArtifactMultiplier(artifactAtkMul)
 }
