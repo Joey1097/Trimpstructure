@@ -13,8 +13,10 @@
 | `combat.ts` | ✅ 稳定 | 战斗与地图系统（多地图 + 护盾/限时） |
 | `combat.test.ts` | ✅ 稳定 | 战斗系统测试 |
 | `offline.ts` | ✅ 稳定 | 离线收益计算 |
-| `prestige.ts` | ✅ 稳定 | 传承系统（传承点/重置） |
+| `prestige.ts` | ✅ 稳定 | 传承系统（含 Layer 2 觉醒） |
 | `research.ts` | ✅ 稳定 | 研究系统 store |
+| `achievements.ts` | ✅ 稳定 | 成就系统 |
+| `daily.ts` | ✅ 稳定 | 日常任务系统 |
 | `world.ts` | ✅ 稳定 | 世界节点树 |
 | `worldEffects.ts` | ✅ 稳定 | 世界乘数同步器 |
 
