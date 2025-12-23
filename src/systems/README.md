@@ -9,8 +9,12 @@
 | `artifacts.ts` | ✅ 稳定 | 神器系统（背包/装备/预设） |
 | `automation.ts` | ✅ 稳定 | 自动化规则引擎 |
 | `automation.test.ts` | ✅ 稳定 | 自动化测试 |
-| `combat.ts` | ✅ 稳定 | 战斗与地图系统 |
+| `buildings.ts` | ✅ 稳定 | 建筑系统 store |
+| `combat.ts` | ✅ 稳定 | 战斗与地图系统（多地图 + 护盾/限时） |
+| `combat.test.ts` | ✅ 稳定 | 战斗系统测试 |
 | `offline.ts` | ✅ 稳定 | 离线收益计算 |
+| `prestige.ts` | ✅ 稳定 | 传承系统（传承点/重置） |
+| `research.ts` | ✅ 稳定 | 研究系统 store |
 | `world.ts` | ✅ 稳定 | 世界节点树 |
 | `worldEffects.ts` | ✅ 稳定 | 世界乘数同步器 |
 
@@ -19,8 +23,11 @@
 ```
 state/store ← automation ← core/loop
            ← artifacts
-           ← combat ← world
+           ← buildings ← data/buildings
+           ← combat ← world, data/maps
            ← offline
+           ← prestige ← combat, buildings
+           ← research ← data/research, world
            ← worldEffects ← world
 ```
 
