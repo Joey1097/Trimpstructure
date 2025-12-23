@@ -25,9 +25,13 @@ function ProductionBreakdown({
 }) {
   const [showDetail, setShowDetail] = useState(false)
 
-  const worldMul = useWorldStore((s) => s.getMultiplier('resource'))
-  const artifactMul = useArtifactStore((s) => s.getArtifactMultiplier('resource'))
-  const legacyMul = usePrestigeStore((s) => s.getLegacyMultiplier())
+  const worldMulVal = useWorldStore((s) => s.getMultiplier('resource').toString())
+  const artifactMulVal = useArtifactStore((s) => s.getArtifactMultiplier('resource').toString())
+  const legacyMulVal = usePrestigeStore((s) => s.getLegacyMultiplier().toString())
+
+  const worldMul = new Decimal(worldMulVal)
+  const artifactMul = new Decimal(artifactMulVal)
+  const legacyMul = new Decimal(legacyMulVal)
 
   // 各效率因子（简化版，实际可从建筑系统获取）
   const basePop = new Decimal(assignedPop)
