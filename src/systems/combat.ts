@@ -1,5 +1,5 @@
 /**
- * @Input: Zustand, Decimal.js, useWorldStore, MAPS
+ * @Input: Zustand, Decimal.js, useWorldStore, useEquipmentStore, MAPS
  * @Output: useCombatStore - 战斗/地图状态 (节点/路径/战斗属性/掉落)
  * @Pos: 战斗与地图系统，管理节点推进和战斗力计算
  * @Notice: If this file changes, update this block AND the folder's README.
@@ -9,6 +9,7 @@ import { create } from 'zustand'
 import Decimal from 'decimal.js'
 import { useWorldStore } from './world'
 import { MAPS, type GameMap } from '../data/maps'
+import { useEquipmentStore } from './equipment'
 
 export interface DropChance {
   id: string
@@ -160,9 +161,11 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     if (!node) return null
 
     const { combat } = get()
+    // 从装备系统获取动态装备评分
+    const gearScore = useEquipmentStore.getState().getTotalGearScore()
     // 计算 DPS = 基础攻击 × 根号(装备评分) × 世界乘数 × 神器乘数
     let dps = combat.baseAttack
-      .mul(combat.gearScore.sqrt())
+      .mul(gearScore.sqrt())
       .mul(combat.worldMultiplier)
       .mul(combat.artifactMultiplier)
 
@@ -215,8 +218,10 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       return
     }
 
+    // 从装备系统获取动态装备评分
+    const gearScore = useEquipmentStore.getState().getTotalGearScore()
     let dps = combat.baseAttack
-      .mul(combat.gearScore.sqrt())
+      .mul(gearScore.sqrt())
       .mul(combat.worldMultiplier)
       .mul(combat.artifactMultiplier)
 

@@ -12,6 +12,7 @@
 | `buildings.ts` | ✅ 稳定 | 建筑系统 store |
 | `combat.ts` | ✅ 稳定 | 战斗与地图系统（多地图 + 护盾/限时） |
 | `combat.test.ts` | ✅ 稳定 | 战斗系统测试 |
+| `equipment.ts` | ✅ 稳定 | 装备系统（装备槽位/评分计算） |
 | `offline.ts` | ✅ 稳定 | 离线收益计算 |
 | `prestige.ts` | ✅ 稳定 | 传承系统（含 Layer 2 觉醒） |
 | `research.ts` | ✅ 稳定 | 研究系统 store |
@@ -26,7 +27,8 @@
 state/store ← automation ← core/loop
            ← artifacts
            ← buildings ← data/buildings
-           ← combat ← world, data/maps
+           ← combat ← world, equipment, data/maps
+           ← equipment ← data/equipment
            ← offline
            ← prestige ← combat, buildings
            ← research ← data/research, world
@@ -35,3 +37,4 @@ state/store ← automation ← core/loop
 
 ---
 ⚠️ **Warning**: If the structure of this folder changes, update this document.
+

@@ -17,10 +17,6 @@ React UI 组件层，负责渲染游戏界面。
 | `StatsPanel.tsx` | ✅ 稳定 | 统计与目标面板 |
 | `SettingsPanel.tsx` | ✅ 稳定 | 设置面板 |
 | `AchievementPanel.tsx` | ✅ 稳定 | 成就面板 |
-| `ResearchPanel.tsx` | ✅ 稳定 | 研究面板 |
-| `PrestigePanel.tsx` | ✅ 稳定 | 传承面板 |
-| `StatsPanel.tsx` | ✅ 稳定 | 统计与目标面板 |
-| `SettingsPanel.tsx` | ✅ 稳定 | 设置面板 |
 
 ## 导航结构
 

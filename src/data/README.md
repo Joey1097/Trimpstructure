@@ -20,7 +20,7 @@
 buildings.ts → systems/buildings.ts → ui/BuildingPanel.tsx
 research.ts → systems/research.ts → ui/ResearchPanel.tsx
 maps.ts → systems/combat.ts → ui/MapPanel.tsx
-equipment.ts → (待集成)
+equipment.ts → systems/equipment.ts → systems/combat.ts
 ```
 
 ---
