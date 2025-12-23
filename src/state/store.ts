@@ -1,3 +1,10 @@
+/**
+ * @Input: Zustand, Decimal.js
+ * @Output: useGameStore - 全局游戏状态 (资源/人口/乘数/hydrate/setters)
+ * @Pos: 核心状态管理，被所有系统和UI组件依赖
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { create } from 'zustand'
 import Decimal from 'decimal.js'
 

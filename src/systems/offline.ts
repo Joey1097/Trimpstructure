@@ -1,3 +1,10 @@
+/**
+ * @Input: React hooks, Decimal.js, useGameStore, useWorldStore
+ * @Output: useOfflineReport() - 离线收益计算和报告 hook
+ * @Pos: 离线收益系统，计算并应用离线期间的资源积累
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useEffect, useState } from 'react'
 import Decimal from 'decimal.js'
 import { useGameStore } from '../state/store'

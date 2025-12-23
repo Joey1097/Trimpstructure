@@ -1,3 +1,10 @@
+/**
+ * @Input: useWorldStore, WORLD_NODES
+ * @Output: WorldPanel 组件 - 世界节点树面板
+ * @Pos: UI 面板，显示世界节点购买界面
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useWorldStore } from '../systems/world'
 import { WORLD_NODES } from '../data/worldNodes'
 

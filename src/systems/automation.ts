@@ -1,3 +1,10 @@
+/**
+ * @Input: useGameStore, useArtifactStore, useCombatStore, useWorldStore
+ * @Output: useAutomationStore - 自动化规则引擎 (规则CRUD/条件评估/动作执行)
+ * @Pos: 自动化系统，每 tick 评估规则并执行动作
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { create } from 'zustand'
 import { useGameStore, type ResourceKey } from '../state/store'
 import { useArtifactStore } from './artifacts'

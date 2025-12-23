@@ -1,3 +1,10 @@
+/**
+ * @Input: startGameLoop, startAutoSave, useOfflineReport, App 组件
+ * @Output: Root 组件 - 应用根容器
+ * @Pos: 顶层组件，初始化游戏循环/存档/离线收益
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useEffect } from 'react'
 import { startGameLoop } from './core/loop'
 import { startAutoSave } from './save/index'

@@ -1,3 +1,10 @@
+/**
+ * @Input: useAutomationStore, useArtifactStore, React hooks
+ * @Output: AutomationPanel 组件 - 自动化规则管理面板
+ * @Pos: UI 面板，显示规则列表和编辑器
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useAutomationStore, type AutomationRule } from '../systems/automation'
 import { useArtifactStore } from '../systems/artifacts'
 import { useState } from 'react'
@@ -49,7 +56,7 @@ export default function AutomationPanel() {
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 16 }}>
       <h2>自动化规则</h2>
-      
+
       <div style={{ marginBottom: 20 }}>
         <h3>预设规则</h3>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -64,7 +71,7 @@ export default function AutomationPanel() {
       <button onClick={() => addRule({ name: '新规则', enabled: true, conditions: [], actions: [] })}>
         添加自定义规则
       </button>
-      
+
       <div style={{ marginTop: 12 }}>
         {automation.rules.map((r) => (
           <div key={r.id} style={{ border: '1px solid #ccc', borderRadius: 6, padding: 12, marginBottom: 8 }}>
@@ -87,13 +94,13 @@ export default function AutomationPanel() {
                 启用
               </label>
             </div>
-            
+
             {editingRule === r.id && (
               <div style={{ marginTop: 12, padding: 12, backgroundColor: '#f5f5f5', borderRadius: 4 }}>
                 <RuleEditor rule={r} onUpdate={(patch) => updateRule(r.id, patch)} />
               </div>
             )}
-            
+
             {!r.conditions.length && !r.actions.length && (
               <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>
                 此规则暂无条件和动作
@@ -120,7 +127,7 @@ function RuleEditor({ rule, onUpdate }: { rule: AutomationRule; onUpdate: (patch
           />
         </label>
       </div>
-      
+
       <div style={{ marginBottom: 12 }}>
         <strong>条件 ({rule.conditions.length}):</strong>
         {rule.conditions.map((cond, idx) => (
@@ -132,7 +139,7 @@ function RuleEditor({ rule, onUpdate }: { rule: AutomationRule; onUpdate: (patch
           <div style={{ fontSize: 13, color: '#666', marginLeft: 8 }}>暂无条件</div>
         )}
       </div>
-      
+
       <div>
         <strong>动作 ({rule.actions.length}):</strong>
         {rule.actions.map((action, idx) => (
@@ -144,7 +151,7 @@ function RuleEditor({ rule, onUpdate }: { rule: AutomationRule; onUpdate: (patch
           <div style={{ fontSize: 13, color: '#666', marginLeft: 8 }}>暂无动作</div>
         )}
       </div>
-      
+
       <div style={{ marginTop: 12, fontSize: 12, color: '#888' }}>
         提示: 目前需要通过预设规则或代码来添加条件和动作
       </div>

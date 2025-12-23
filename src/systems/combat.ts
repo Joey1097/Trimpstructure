@@ -1,3 +1,10 @@
+/**
+ * @Input: Zustand, Decimal.js, useWorldStore
+ * @Output: useCombatStore - 战斗/地图状态 (节点/路径/战斗属性/掉落)
+ * @Pos: 战斗与地图系统，管理节点推进和战斗力计算
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { create } from 'zustand'
 import Decimal from 'decimal.js'
 import { useWorldStore } from './world'

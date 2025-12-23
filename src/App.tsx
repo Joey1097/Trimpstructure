@@ -1,3 +1,10 @@
+/**
+ * @Input: React hooks, 5个 UI 面板组件
+ * @Output: App 组件 - 主应用容器（标签页导航）
+ * @Pos: 应用主组件，管理面板切换
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useState } from 'react'
 import Dashboard from './ui/Dashboard'
 import WorldPanel from './ui/WorldPanel'

@@ -1,3 +1,10 @@
+/**
+ * @Input: useCombatStore, TEST_MAP
+ * @Output: MapPanel 组件 - 地图推进面板
+ * @Pos: UI 面板，显示地图节点和战斗入口
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useCombatStore } from '../systems/combat'
 import { TEST_MAP } from '../systems/combat'
 

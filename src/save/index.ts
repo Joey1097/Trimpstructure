@@ -1,3 +1,10 @@
+/**
+ * @Input: idb (IndexedDB), Decimal.js, useGameStore
+ * @Output: saveState, loadState, startAutoSave - 存档系统核心功能
+ * @Pos: 数据持久化层，管理 IndexedDB 存储和自动保存
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
 import Decimal from 'decimal.js'

@@ -1,3 +1,10 @@
+/**
+ * @Input: Decimal.js
+ * @Output: WORLD_NODES - 世界节点配置表, WorldNode/NodeBranch 类型
+ * @Pos: 数据定义层，提供世界节点树的静态配置
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import Decimal from 'decimal.js'
 
 export type NodeBranch = 'resource' | 'combat' | 'control' | 'automation'

@@ -1,3 +1,10 @@
+/**
+ * @Input: useGameStore (资源/人口状态)
+ * @Output: Dashboard 组件 - 概览面板（资源显示/人口分配）
+ * @Pos: UI 主面板，显示核心游戏状态
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useGameStore } from '../state/store'
 import Decimal from 'decimal.js'
 

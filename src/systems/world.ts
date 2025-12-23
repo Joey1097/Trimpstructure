@@ -1,3 +1,10 @@
+/**
+ * @Input: Zustand, Decimal.js, WORLD_NODES (节点配置)
+ * @Output: useWorldStore - 世界节点状态 (解锁/购买/货币/乘数)
+ * @Pos: 世界节点树系统，管理节点解锁和全局乘数
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { create } from 'zustand'
 import Decimal from 'decimal.js'
 import { WORLD_NODES } from '../data/worldNodes'

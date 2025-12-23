@@ -1,3 +1,10 @@
+/**
+ * @Input: Zustand, Decimal.js
+ * @Output: useArtifactStore - 神器状态 (背包/装备/预设/乘数计算)
+ * @Pos: 神器系统，提供装备管理和属性加成
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { create } from 'zustand'
 import Decimal from 'decimal.js'
 

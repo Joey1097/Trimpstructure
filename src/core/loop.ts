@@ -1,3 +1,10 @@
+/**
+ * @Input: useGameStore (状态), calcPerSecondProduction (公式), useAutomationStore (自动化)
+ * @Output: startGameLoop() - 启动游戏主循环，返回停止函数
+ * @Pos: 游戏核心循环，驱动资源产出和自动化规则执行
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useGameStore } from '../state/store'
 import Decimal from 'decimal.js'
 import { calcPerSecondProduction } from './formulas'

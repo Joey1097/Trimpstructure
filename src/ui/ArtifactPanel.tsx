@@ -1,3 +1,10 @@
+/**
+ * @Input: useArtifactStore
+ * @Output: ArtifactPanel 组件 - 神器管理面板
+ * @Pos: UI 面板，显示神器装备和预设切换
+ * @Notice: If this file changes, update this block AND the folder's README.
+ */
+
 import { useArtifactStore } from '../systems/artifacts'
 
 export default function ArtifactPanel() {
