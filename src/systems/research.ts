@@ -46,7 +46,7 @@ export const useResearchStore = create<ResearchStore>((set, get) => ({
         const research = RESEARCH[researchId]
         if (!research) return false
 
-        const currencies = useWorldStore.getState().currencies
+        const currencies = useWorldStore.getState().world.currencies
         if (research.baseCost.blueprint && currencies.blueprint.lt(research.baseCost.blueprint)) return false
         if (research.baseCost.memory && currencies.memory.lt(research.baseCost.memory)) return false
         return true
